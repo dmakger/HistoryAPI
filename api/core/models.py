@@ -1,5 +1,7 @@
 from ckeditor_uploader.fields import RichTextUploadingField
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 
 class Type(models.Model):
@@ -18,7 +20,7 @@ class Person(models.Model):
     lastname = models.CharField("Фамилия", max_length=32, blank=True, null=True, default=None)
     username = models.CharField("Имя", max_length=32)
     pastname = models.CharField("Отчество", max_length=32, blank=True, null=True, default=None)
-    description = RichTextUploadingField("Описание")
+    description = models.TextField("Описание")
     image = models.ImageField("Аватар", null=True, blank=True, default=None, upload_to="person/")
     date_birth = models.DateField("Дата рождения")
     date_death = models.DateField("Дата смерти")
@@ -45,3 +47,11 @@ class Event(models.Model):
 
     def __str__(self):
         return self.title
+
+
+@receiver(post_save, sender=Event)
+def create_event(sender, **kwargs):
+    if kwargs['created']:
+        event = kwargs['instance']
+        event.content = event.content.replace('&nbsp;', ' ')
+        event.save()
