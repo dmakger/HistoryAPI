@@ -33,7 +33,7 @@ class Person(models.Model):
 
 class Event(models.Model):
     title = models.CharField("Название", max_length=32, unique=True)
-    description = RichTextUploadingField("Описание")
+    description = models.CharField("Описание", max_length=256, blank=True, null=True)
     content = RichTextUploadingField("Контент")
     image = models.ImageField("Изображение", null=True, blank=True, default=None, upload_to="event/")
     types = models.ManyToManyField(to=Type, verbose_name="Типы")
