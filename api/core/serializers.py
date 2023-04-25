@@ -36,16 +36,16 @@ class EventDetailSerializer(serializers.ModelSerializer):
         model = Event
         fields = ['id', 'title', 'description', 'persons', 'content']
 
-    @staticmethod
-    def get_persons(instance):
-        return PersonSerializer(instance.persons, many=True).data
+    def get_persons(self, instance):
+        result = PersonSerializer(instance.persons, many=True).data
+        return result[:self.context.get('limit', len(result))]
 
 
 # ####### ПЕРСОНЫ #######
 class PersonSerializer(serializers.ModelSerializer):
     class Meta:
         model = Person
-        fields = ['id', 'lastname', 'username', 'pastname']
+        fields = ['id', 'lastname', 'username', 'pastname', 'image']
 
 
 class PersonDetailSerializer(serializers.ModelSerializer):

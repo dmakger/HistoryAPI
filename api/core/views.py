@@ -51,7 +51,7 @@ class EventDetailView(viewsets.ModelViewSet):
         if len(qs) == 0:
             return self.error_helper.is_not_found()
         return Response(
-            self.serializer_class(qs[0]).data,
+            self.serializer_class(qs[0], context={'limit': 8}).data,
             status=status.HTTP_200_OK,
         )
 
